@@ -1,11 +1,12 @@
 # writings
 
-I like writing articles about things I think other developers will find interesting and/or useful. I typically post them to [dev.to](https://dev.to/stevewhitmore) for visibility but keep them here as well.
+I like writing articles about things I think other developers will find interesting and useful. I typically post them to [dev.to](https://dev.to/stevewhitmore) for visibility but keep them here as well.
 
 ## Topics
 
 ### Angular
 
+- [Angular Unit Tests: Common Pain Points](./2022-11-21-angular-unit-test-pain-points.md)
 - [State Management Is Easy Now!? An Introduction to Observable Store](./2022-10-24-observable-store.md)
 
 ### DevOps
