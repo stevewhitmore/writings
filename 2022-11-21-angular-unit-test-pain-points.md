@@ -1,5 +1,7 @@
 # Angular Unit Tests: Common Pain Points
 
+![Man about to rage quit](https://res.cloudinary.com/practicaldev/image/fetch/s--Ro6201-x--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/leik1y3s418tcc1lava4.jpg)
+
 One of the biggest struggles I see when people are first learning Angular is dealing with unit tests. They can be painful when you're new to the framework or are used to dealing with backend code.
 
 The biggest pain points I think people run into are:
@@ -13,14 +15,14 @@ I wanted to post a quick blurb that may come in handy for those who are struggli
 
 ## The Setup
 
-Keep it simple! This tends to be the first place people tangle themselves up. Only set up what you *absolutely need*.
+Keep it simple! This tends to be the first place people get tangled up. Only set up what you *absolutely need*.
 
 Golden rules to follow for setting up your tests:
 
 1. Keep it simple.
 2. Don't import modules unless absolutely necessary (e.g. `ReactiveFormsModule` if you have form elements in the component or `RouterModule` if you have `routerLinks`).
 3. Never use the `NO_ERRORS_SCHEMA`.
-4. Never provide real services, even if they don't make http calls.
+4. Never provide real services when testing components, even if they don't make http calls.
 
 I can't overemphasize the first rule. Tests, and their setup, should be simple. Regardless of how complicated an application or its components may be.
 
@@ -69,7 +71,7 @@ export class CustomerSummaryComponent implements OnInit, OnDestroy {
 }
 ```
 
-There are a few things going on here. We have a few services, we're dealing with the ActivatedRoute, and we have a couple lifecycle hooks.
+There are a few things going on here. We have a couple services, we're dealing with the ActivatedRoute, and we have a couple lifecycle hooks.
 
 Here's what the setup should look like for our tests:
 
@@ -116,7 +118,9 @@ getCustomerData() {
 }
 ```
 
-In this method we're grabbing some data from the ActivatedRoute, passing it to our service, and storing the result in an observable. Before we go any further let me outline some things we're NOT trying to test:
+In this method we're grabbing some data from the ActivatedRoute, passing it to our service, and storing the result in an Observable. 
+
+Before we go any further let me outline some things that we're NOT trying to test:
 
 - How ActivatedRoute behaves
 - What happens in `customerDataService.getCustomerData()`
@@ -152,8 +156,6 @@ describe('getCustomerData()', () => {
 ```
 
 Each test has a narrow focus and is following that AAA structure (Assemble, Act, Assert). Our `activatedRouteStub` and `customerDataServiceStub` are just bouncing back what we need to make our assertions. They would look something like this:
-
-*activated-route.stub.ts*
 
 ```typescript
 export class ActivatedRouteStub {
@@ -192,7 +194,7 @@ This is a big pain point. When we're dealing in async space we risk subjecting o
 
 Let's take a look at a couple scenarios where we're forced to deal with an Observable:
 
-With that first method `getCustomerData()` we originally just asserted that our `customerData$` property wasn't falsy. That's fine, but it would be better if we could crack open that observable and make sure what we expect is inside:
+With that first method `getCustomerData()` we originally just asserted that our `customerData$` property wasn't falsy. That's fine, but it would be better if we could crack open that Observable and make sure what we expect is inside:
 
 ```typescript
 const mockCustomer = {
@@ -226,7 +228,7 @@ describe('getCustomerData()', () => {
 
 By wrapping our test in `fakeAsync` we're able to test asynchronous code in a synchronous way. There are plenty of articles out there describing how this works in more detail and I encourage you to read up on it. In the meantime, just think of it as a nice tool to keep headaches in our tests to a minimum. 
 
-Calling `flush()` either at the end of each test wrapped in `fakeAsync` or in a `afterEach()` method will ensure that anything going on in async space is wrapped up. This will help with bleedover.
+Calling `flush()` either at the end of each test wrapped in `fakeAsync` or in a `afterEach()` method will ensure that anything going on in async space is wrapped up. This will help prevent test bleedover.
 
 ---
 
@@ -271,7 +273,7 @@ export class CustomerDataServiceStub {
 }
 ```
 
-This is because BehaviorSubjects immediately emit values when they're initialized. If `customerUpdated$` was a regular Subject we'd need to break that AAA structure a little bit:
+This is because BehaviorSubjects immediately emit values when they're subscribed to. If `customerUpdated$` was a regular Subject we'd need to break that AAA structure a little bit:
 
 ```typescript
   describe('listenForUpdates()', () => {
@@ -289,12 +291,17 @@ This is because BehaviorSubjects immediately emit values when they're initialize
   });
 ```
 
-## Lifecycle Hooks (ngOnIt, ngOnChanges, etc)
+The sooner you can get comfortable with Observables, the better. They can feel daunting at first but once you get used to them they really are magical. Some good points to focus on would be:
+
+- Learning the differences between the more widely used Subject types (Subject, BehaviorSubject, ReplaySubject)
+- Learning the most commonly used operators (map, mergeMap/switchMap, combineLatest, takeUntil, to name a few)
+
+## Dealing with lifecycle hooks
 
 In short, don't test these. We want to test our code - not the framework we're using.
 
-Let's change our CustomerSummary component a bit so that it's recieving data from a parent instead of fetching said data and it's capturing
-the customer's first name:
+Let's change our CustomerSummary component a bit so that it's recieving data from a parent instead of fetching said data. We'll have it capture
+the customer's first name into a class property as well:
 
 ```typescript
 export class CustomerSummaryComponent implements OnInit, OnDestroy {
@@ -376,3 +383,14 @@ listenForUpdates() {
         });
 }
 ```
+
+## Summary 
+
+Your key takeways from this post should be
+
+- Keep your setup simple
+- Keep your test scope narrow
+- Observables are manageable with `fakeAsync` and `flush`
+- Be mindful of *what* you're testing and why
+
+Happy testing!
