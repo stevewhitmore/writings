@@ -2,9 +2,6 @@
 
 ![Python woman image](https://res.cloudinary.com/practicaldev/image/fetch/s--WIpmUB8k--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/tr2e4wrn2ynz2d9vbdd3.jpg)
 
-*devops, python, angular, productivity* 
-*Crossposted to [Dev.to](https://dev.to/stevewhitmore/python-powered-pipelines-preposterous-4316)*
-
 No, not preposterous. Powerful.
 
 DevOps is all about rapid delivery. Using Python to make your pipelines "smart" can help you achieve that goal.
