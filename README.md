@@ -20,4 +20,5 @@ I like writing articles about things I think other developers will find interest
 
 ### Misc
 
+- [You are going to fail](./2023-01-05-fail.md)
 - [A fun exercise for new web developers](./2020-10-10-new-dev.md)
